@@ -1,0 +1,43 @@
+---
+import TimeToNextBusTimer from "./TimeToNextBusTimer.tsx";
+
+interface Props {
+	lineName: string;
+	rawStopTimes: string[];
+	lineColor: string;
+}
+
+const { lineColor, lineName, rawStopTimes } = Astro.props;
+---
+
+<li class="wrap">
+	<span class="colorIndicator" style=`background-color: ${lineColor};` />
+	<div class="textWrap">
+		<span class="name">{lineName}</span>
+		<TimeToNextBusTimer client:load rawStopTimes={rawStopTimes} />
+	</div>
+</li>
+
+<style>
+	.wrap {
+		list-style: none;
+		display: flex;
+		padding: 10px;
+		background-color: #23262d;
+		background-image: none;
+		background-size: 400%;
+		border-radius: 7px;
+		box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+		overflow: hidden;
+		gap: 10px;
+	}
+	.textWrap{
+		display: flex;
+		flex-flow: column nowrap;
+	}
+	.colorIndicator {
+		width: 10px;
+		height: 100%;
+		box-shadow: inset 0px 0px 1px 1px rgb(0 0 0 / 20%);
+	}
+</style>
