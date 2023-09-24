@@ -7,5 +7,7 @@ import vercel from "@astrojs/vercel/serverless";
 export default defineConfig({
   integrations: [solidJs()],
   output: "server",
-  adapter: vercel()
+  adapter: vercel({
+    includeFiles: ['./src/data/busStopData.json'],
+  })
 });
