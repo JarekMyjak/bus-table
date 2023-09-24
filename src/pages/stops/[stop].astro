@@ -2,7 +2,7 @@
 import Layout from "../../layouts/Layout.astro";
 import TimeToNextBusCard from "../../components/TimeToNextBusCard.astro";
 import NoscriptWarnCard from "../../components/NoscriptWarnCard.astro";
-import rawData from "../../../public/busStopData.json";
+import rawData from "../../data/busStopData.json";
 
 export function getStaticPaths() {
     return Object.keys(rawData.stops).map((slug) => {
