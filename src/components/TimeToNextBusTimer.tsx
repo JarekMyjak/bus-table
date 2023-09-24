@@ -31,7 +31,7 @@ export default function TimeToNextBusTimer({ rawStopTimes }: TimeToNextBusTimerP
 	}, 1000);
 	onCleanup(() => clearInterval(interval));
 
-	const timeFormater = new Intl.DateTimeFormat("hc", { hour: "numeric", minute: "2-digit" })
+	const timeFormater = new Intl.DateTimeFormat("pl-pl", { hour: "numeric", minute: "2-digit" })
 
 	return (<>
 		<span class="nextBusTimer">{timeFormater.format(stopTimes[nextStopTimeIndex()])}</span>
