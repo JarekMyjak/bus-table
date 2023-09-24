@@ -7,6 +7,7 @@ type TimeToNextBusTimerProps = {
 
 export default function TimeToNextBusTimer({ rawStopTimes }: TimeToNextBusTimerProps) {
 
+	console.log(rawStopTimes);
 	const stopTimes = rawStopTimes.map((rawTime) => {
 		const [hours, minutes] = rawTime.split(":").map(n => Number(n));
 

@@ -50,7 +50,10 @@
                         "22:20"
                     ]
                 },
-                "kasprowicza": []
+                "kasprowicza": {
+                    "name": "Kasprowicza",
+                    "times": []
+                }
             }
         },
         {
@@ -95,7 +98,10 @@
                         "22:47"
                     ]
                 },
-                "kasprowicza": []
+                "kasprowicza": {
+                    "name": "Kasprowicza",
+                    "times": []
+                }
             }
         },
         {
@@ -136,7 +142,10 @@
                         "20:02"
                     ]
                 },
-                "kasprowicza": []
+                "kasprowicza": {
+                    "name": "Kasprowicza",
+                    "times": []
+                }
             }
         }
     ]
