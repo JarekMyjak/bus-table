@@ -15,6 +15,7 @@ const { lineColor, lineName, rawStopTimes } = Astro.props;
 	<div class="textWrap">
 		<span class="name">{lineName}</span>
 		<TimeToNextBusTimer client:load rawStopTimes={rawStopTimes} />
+		<TimeToNextBusTimer client:only="solid-js" rawStopTimes={rawStopTimes} />
 	</div>
 </li>
 
