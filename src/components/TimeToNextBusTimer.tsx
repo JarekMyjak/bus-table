@@ -1,6 +1,7 @@
 
 import { createSignal, onCleanup } from 'solid-js';
 import { zonedTimeToUtc } from "date-fns-tz"
+import { isBefore } from "date-fns"
 
 type TimeToNextBusTimerProps = {
 	rawStopTimes: string[];
@@ -20,7 +21,9 @@ export default function TimeToNextBusTimer({ rawStopTimes }: TimeToNextBusTimerP
 	});
 
 	function findNextTimeIndex() {
-		return stopTimes.findIndex((time) => time > new Date())
+		// return stopTimes.findIndex((time) => time > new Date())
+		// console.log(isBefore(stopTimes[0], new Date()), stopTimes[0], new Date());
+		return stopTimes.findIndex((time) => isBefore(time, new Date()))
 	}
 
 	const [nextStopTimeIndex, setNextStopTimeIndex] = createSignal(findNextTimeIndex());
