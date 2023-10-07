@@ -1,7 +1,8 @@
 
 import { createSignal, onCleanup } from 'solid-js';
-import { zonedTimeToUtc } from "date-fns-tz"
-import { isBefore } from "date-fns"
+import { zonedTimeToUtc, utcToZonedTime, getTimezoneOffset } from "date-fns-tz";
+// import { UTCDateMini } from "@date-fns/utc";
+import { isBefore, addMilliseconds } from "date-fns";
 
 type TimeToNextBusTimerProps = {
 	rawStopTimes: string[];
@@ -11,18 +12,33 @@ export default function TimeToNextBusTimer({ rawStopTimes }: TimeToNextBusTimerP
 	const timeFormater = new Intl.DateTimeFormat("pl-PL", { hour: "numeric", minute: "2-digit" })
 
 	const now = new Date();
+	// const nowU = new UTCDateMini();
+	const zonedDate = zonedTimeToUtc(now,  "Europe/Warsaw");
+	const offset = getTimezoneOffset('Europe/Warsaw');
+	const utcTimeStamp = new Date(Date.now()+(new Date().getTimezoneOffset()*60000)).getTime()
+
+	// const added = addMilliseconds(nowU, offset)
+	// const utctesta = addMilliseconds(nowU, offset)
+
+	console.log(now.getTime(), utcTimeStamp, now.getTime() - utcTimeStamp)
+
 	const stopTimes = rawStopTimes.map((rawTime) => {
 		const [hours, minutes] = rawTime.split(":").map(n => Number(n));
 
 		const timeString = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate()} ${hours}:${minutes.toString().padStart(2, '0')}:59`
 		const utcDate = zonedTimeToUtc(timeString, 'Europe/Warsaw')
-		console.log(utcDate, timeString, hours + ":" + minutes, rawTime);
+
+		// const dateTimeLocale = format(zonedDate, pattern, { timeZone: "Australia/Lord_Howe" })
+
+		// console.log('timenow', now,'timenow warsaw', zonedDate, hours + ":" + minutes, rawTime);
 		return utcDate;
 	});
 
 	function findNextTimeIndex() {
-		// return stopTimes.findIndex((time) => time > new Date())
-		// console.log(isBefore(stopTimes[0], new Date()), stopTimes[0], new Date());
+		// // return stopTimes.findIndex((time) => time > new Date())
+		// stopTimes.map((time) =>
+		// 	console.log(isBefore(time, new Date()), time, new Date())
+		// )
 		return stopTimes.findIndex((time) => isBefore(time, new Date()))
 	}
 
@@ -37,10 +53,13 @@ export default function TimeToNextBusTimer({ rawStopTimes }: TimeToNextBusTimerP
 
 
 	return (<>
-		{now.toLocaleString()}<br/>
-		{now.toLocaleString("pl-PL")}
-		<span class="nextBusTimer">{timeFormater.format(stopTimes[nextStopTimeIndex()])}</span>
-		<span class="subsequentBusTimer">{timeFormater.format(stopTimes[(nextStopTimeIndex() + 1) % stopTimes.length])}</span>
+		noww {now.getTime()}{<br/>}
+		zone  {utcTimeStamp}{<br/>}
+		diff  {now.getTime() - utcTimeStamp}{<br/>}
+		{/* {now.toLocaleString()}<br /> */}
+		{/* {now.toLocaleString("pl-PL")} */}
+		{/* <span class="nextBusTimer">{format(stopTimes[nextStopTimeIndex()], "mm:ss")}</span>
+		<span class="subsequentBusTimer">{format(stopTimes[(nextStopTimeIndex() + 1) % stopTimes.length], "mm:ss")}</span> */}
 	</>
 	);
 }
