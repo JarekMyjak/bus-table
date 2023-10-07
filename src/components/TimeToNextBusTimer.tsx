@@ -35,6 +35,7 @@ export default function TimeToNextBusTimer({ rawStopTimes }: TimeToNextBusTimerP
 	const interval = setInterval(() => {
 		const foundNextTime = findNextTimeIndex()
 		setNextStopTimeIndex(current => foundNextTime !== -1 ? foundNextTime : 0);
+		console.log('tick', foundNextTime)
 	}, 1000);
 	onCleanup(() => clearInterval(interval));
 
