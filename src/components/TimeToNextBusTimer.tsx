@@ -9,8 +9,9 @@ type TimeToNextBusTimerProps = {
 }
 
 export default function TimeToNextBusTimer({ rawStopTimes }: TimeToNextBusTimerProps) {
-	// const timeFormater = new Intl.DateTimeFormat("pl-PL", { hour: "numeric", minute: "2-digit" })
+	const timeFormater = new Intl.DateTimeFormat("pl-PL", { hour: "numeric", minute: "2-digit" })
 	const [test, setTest] = createSignal<string[]>([]);
+	const [test2, setTest2] = createSignal<number>(0);
 	
 	const now = new Date().getTime();
 	const offset = getTimezoneOffset('Europe/Warsaw');
@@ -36,21 +37,20 @@ export default function TimeToNextBusTimer({ rawStopTimes }: TimeToNextBusTimerP
 	});
 
 	function findNextTimeIndex() {
-		// // return stopTimes.findIndex((time) => time > new Date())
-		// stopTimes.map((time) =>
-		// 	console.log(isBefore(time, new Date()), time, new Date())
-		// )
-		return stopTimes.findIndex((time) => isBefore(time, new Date()))
+		const newAdjustedTime = new Date(new Date().getTime() + relativeOffset);
+		return stopTimes.findIndex((time) => time > newAdjustedTime)
 	}
 
 	const [nextStopTimeIndex, setNextStopTimeIndex] = createSignal(findNextTimeIndex());
 
 	const interval = setInterval(() => {
 		const foundNextTime = findNextTimeIndex()
-		setNextStopTimeIndex(foundNextTime !== -1 ? foundNextTime : 0);
+		setNextStopTimeIndex(current => foundNextTime !== -1 ? foundNextTime : 0);
 		// console.log(now.getTime(), utcTimeStamp, now.getTime() - utcTimeStamp)
+		console.log("tick", foundNextTime);
+		setTest2(current => current + 1)
 
-	}, 1000);
+	}, 10000);
 	onCleanup(() => clearInterval(interval));
 
 
@@ -62,8 +62,9 @@ export default function TimeToNextBusTimer({ rawStopTimes }: TimeToNextBusTimerP
 		{test().map((t)=>{return <>{t}<br/></>})}
 		{/* {now.toLocaleString()}<br /> */}
 		{/* {now.toLocaleString("pl-PL")} */}
-		{/* <span class="nextBusTimer">{format(stopTimes[nextStopTimeIndex()], "mm:ss")}</span>
-		<span class="subsequentBusTimer">{format(stopTimes[(nextStopTimeIndex() + 1) % stopTimes.length], "mm:ss")}</span> */}
+		<>{test2()}</>
+		<span class="nextBusTimer">{timeFormater.format(stopTimes[nextStopTimeIndex()])}</span>
+		<span class="subsequentBusTimer">{timeFormater.format(stopTimes[(nextStopTimeIndex() + 1) % stopTimes.length])}</span>
 	</>
 	);
 }
