@@ -20,7 +20,7 @@ export default function TimeToNextBusTimer({ rawStopTimes }: TimeToNextBusTimerP
 	const stopTimes = rawStopTimes.map((rawTime) => {
 		const [hours, minutes] = rawTime.split(":").map(n => Number(n));
 		const timeCopy = new Date (adjustedDate)
-		timeCopy.setHours(hours, minutes)
+		timeCopy.setHours(hours, minutes, 59)
 		
 		return timeCopy;
 	});
