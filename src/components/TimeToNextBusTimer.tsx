@@ -10,27 +10,29 @@ type TimeToNextBusTimerProps = {
 
 export default function TimeToNextBusTimer({ rawStopTimes }: TimeToNextBusTimerProps) {
 	// const timeFormater = new Intl.DateTimeFormat("pl-PL", { hour: "numeric", minute: "2-digit" })
-	const [test, setTest] = createSignal<Date[]>([]);
+	const [test, setTest] = createSignal<string[]>([]);
 	
 	const now = new Date().getTime();
 	const offset = getTimezoneOffset('Europe/Warsaw');
 	const utcTimeStamp = new Date(Date.now()+(new Date().getTimezoneOffset()*60000)).getTime()
 	const relativeOffset = offset - (now - utcTimeStamp);
+	const adjustedDate = new Date(now + relativeOffset);
 
 	// console.log(now.getTime(), utcTimeStamp, now.getTime() - utcTimeStamp, offset)
 
 	const stopTimes = rawStopTimes.map((rawTime) => {
 		const [hours, minutes] = rawTime.split(":").map(n => Number(n));
-
+		const timeCopy = new Date (adjustedDate)
+		timeCopy.setHours(hours, minutes)
+		
 		// const timeString = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate()} ${hours}:${minutes.toString().padStart(2, '0')}:59`
 		
-		const adjustedDate = new Date(now + relativeOffset);
-		adjustedDate.setHours(hours, minutes)
 		// const dateTimeLocale = format(zonedDate, pattern, { timeZone: "Australia/Lord_Howe" })
 
-		console.log(adjustedDate.getHours(), adjustedDate.getMinutes(), hours + ":" + minutes, rawTime);
-		setTest(t => [...t, adjustedDate])
-		return adjustedDate;
+		// console.log(adjustedDate.getHours(), adjustedDate.getMinutes(), hours + ":" + minutes, rawTime);
+		const log = `${timeCopy.getHours()}:${timeCopy.getMinutes()} ${hours}:${minutes}`;
+		setTest(t => [...t, log])
+		return timeCopy;
 	});
 
 	function findNextTimeIndex() {
@@ -57,7 +59,7 @@ export default function TimeToNextBusTimer({ rawStopTimes }: TimeToNextBusTimerP
 		{utcTimeStamp}{<br/>}
 		{/* {now.getTime() - utcTimeStamp}{<br/>} */}
 		{relativeOffset}{<br/>}
-		{test().join('\n')}
+		{test().map((t)=>{return <>{t}<br/></>})}
 		{/* {now.toLocaleString()}<br /> */}
 		{/* {now.toLocaleString("pl-PL")} */}
 		{/* <span class="nextBusTimer">{format(stopTimes[nextStopTimeIndex()], "mm:ss")}</span>
