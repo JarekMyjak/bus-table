@@ -51,7 +51,9 @@
                 },
                 "kasprowicza": {
                     "name": "Kasprowicza",
-                    "times": []
+                    "times": [
+                        "0:00"
+                    ]
                 }
             }
         },
@@ -99,7 +101,9 @@
                 },
                 "kasprowicza": {
                     "name": "Kasprowicza",
-                    "times": []
+                    "times": [
+                        "0:00"
+                    ]
                 }
             }
         },
@@ -151,7 +155,9 @@
                 },
                 "kasprowicza": {
                     "name": "Kasprowicza",
-                    "times": []
+                    "times": [
+                        "0:00"
+                    ]
                 }
             }
         }
