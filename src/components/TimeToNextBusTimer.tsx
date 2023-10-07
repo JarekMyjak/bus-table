@@ -2,26 +2,21 @@
 import { createSignal, onCleanup } from 'solid-js';
 import { zonedTimeToUtc, utcToZonedTime, getTimezoneOffset } from "date-fns-tz";
 // import { UTCDateMini } from "@date-fns/utc";
-import { isBefore, addMilliseconds } from "date-fns";
+import { isBefore } from "date-fns";
 
 type TimeToNextBusTimerProps = {
 	rawStopTimes: string[];
 }
 
 export default function TimeToNextBusTimer({ rawStopTimes }: TimeToNextBusTimerProps) {
-	const timeFormater = new Intl.DateTimeFormat("pl-PL", { hour: "numeric", minute: "2-digit" })
+	// const timeFormater = new Intl.DateTimeFormat("pl-PL", { hour: "numeric", minute: "2-digit" })
 
 	const now = new Date();
-	// const nowU = new UTCDateMini();
-	const zonedDate = zonedTimeToUtc(now,  "Europe/Warsaw");
 	const offset = getTimezoneOffset('Europe/Warsaw');
 	const utcTimeStamp = new Date(Date.now()+(new Date().getTimezoneOffset()*60000)).getTime()
-	const utcTimeStamp2 = new Date(Date.now()+(new Date().getTimezoneOffset()*60000))
+	const relativeOffset = offset - (now.getTime() - utcTimeStamp);
 
-	// const added = addMilliseconds(nowU, offset)
-	// const utctesta = addMilliseconds(nowU, offset)
-
-	console.log(now, utcTimeStamp2, now.getTime() - utcTimeStamp, offset)
+	console.log(now.getTime(), utcTimeStamp, now.getTime() - utcTimeStamp, offset)
 
 	const stopTimes = rawStopTimes.map((rawTime) => {
 		const [hours, minutes] = rawTime.split(":").map(n => Number(n));
@@ -55,9 +50,10 @@ export default function TimeToNextBusTimer({ rawStopTimes }: TimeToNextBusTimerP
 
 
 	return (<>
-		noww {now.getTime()}{<br/>}
-		zone  {utcTimeStamp}{<br/>}
-		diff  {now.getTime() - utcTimeStamp}{<br/>}
+		{now.getTime()}{<br/>}
+		{utcTimeStamp}{<br/>}
+		{now.getTime() - utcTimeStamp}{<br/>}
+		{relativeOffset}{<br/>}
 		{/* {now.toLocaleString()}<br /> */}
 		{/* {now.toLocaleString("pl-PL")} */}
 		{/* <span class="nextBusTimer">{format(stopTimes[nextStopTimeIndex()], "mm:ss")}</span>
