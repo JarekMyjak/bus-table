@@ -16,11 +16,12 @@ export default function TimeToNextBusTimer({ rawStopTimes }: TimeToNextBusTimerP
 	const zonedDate = zonedTimeToUtc(now,  "Europe/Warsaw");
 	const offset = getTimezoneOffset('Europe/Warsaw');
 	const utcTimeStamp = new Date(Date.now()+(new Date().getTimezoneOffset()*60000)).getTime()
+	const utcTimeStamp2 = new Date(Date.now()+(new Date().getTimezoneOffset()*60000))
 
 	// const added = addMilliseconds(nowU, offset)
 	// const utctesta = addMilliseconds(nowU, offset)
 
-	console.log(now.getTime(), utcTimeStamp, now.getTime() - utcTimeStamp)
+	console.log(now, utcTimeStamp2, now.getTime() - utcTimeStamp, offset)
 
 	const stopTimes = rawStopTimes.map((rawTime) => {
 		const [hours, minutes] = rawTime.split(":").map(n => Number(n));
