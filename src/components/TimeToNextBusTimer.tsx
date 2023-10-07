@@ -10,7 +10,8 @@ type TimeToNextBusTimerProps = {
 
 export default function TimeToNextBusTimer({ rawStopTimes }: TimeToNextBusTimerProps) {
 	// const timeFormater = new Intl.DateTimeFormat("pl-PL", { hour: "numeric", minute: "2-digit" })
-
+	const [test, setTest] = createSignal<Date[]>([]);
+	
 	const now = new Date().getTime();
 	const offset = getTimezoneOffset('Europe/Warsaw');
 	const utcTimeStamp = new Date(Date.now()+(new Date().getTimezoneOffset()*60000)).getTime()
@@ -41,7 +42,6 @@ export default function TimeToNextBusTimer({ rawStopTimes }: TimeToNextBusTimerP
 	}
 
 	const [nextStopTimeIndex, setNextStopTimeIndex] = createSignal(findNextTimeIndex());
-	const [test, setTest] = createSignal<Date[]>([]);
 
 	const interval = setInterval(() => {
 		const foundNextTime = findNextTimeIndex()
