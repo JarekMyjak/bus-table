@@ -15,7 +15,7 @@ const stops = rawData.stops;
                 Object.keys(stops).map((slug) => {
                     return (
                         <ListCard
-                            href={`${slug}`}
+                            href={`stops/${slug}`}
                             title={stops[slug as keyof typeof stops].name}
                         />
                     );
