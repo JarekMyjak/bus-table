@@ -10,10 +10,10 @@ type TimeToNextBusTimerProps = {
 
 export default function TimeToNextBusTimer({ rawStopTimes }: TimeToNextBusTimerProps) {
 	const timeFormater = new Intl.DateTimeFormat("pl-PL", { hour: "numeric", minute: "2-digit", hour12: false })
-	
+
 	const now = new Date().getTime();
 	const offset = getTimezoneOffset('Europe/Warsaw');
-	const utcTimeStamp = new Date(Date.now()+(new Date().getTimezoneOffset()*60000)).getTime()
+	const utcTimeStamp = new Date(Date.now() + (new Date().getTimezoneOffset() * 60000)).getTime()
 	const relativeOffset = offset - (now - utcTimeStamp);
 	const adjustedDate = new Date(now + relativeOffset);
 
@@ -21,9 +21,9 @@ export default function TimeToNextBusTimer({ rawStopTimes }: TimeToNextBusTimerP
 
 	const stopTimes = rawStopTimes.map((rawTime) => {
 		const [hours, minutes] = rawTime.split(":").map(n => Number(n));
-		const timeCopy = new Date (adjustedDate)
+		const timeCopy = new Date(adjustedDate)
 		timeCopy.setHours(hours, minutes, 59)
-		
+
 		return timeCopy;
 	});
 
