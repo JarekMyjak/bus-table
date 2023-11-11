@@ -36,11 +36,11 @@ export default function TimeToNextBusTimer({ rawStopTimes }: TimeToNextBusTimerP
 
 	let timeout;
 	createEffect(() => {
-		console.log(stopTimes[nextStopTimeIndex()] - Date.now())
+		console.log(stopTimes[nextStopTimeIndex()] - new Date(new Date() + relativeOffset))
 
 		timeout = setTimeout(() => {
 			setNextStopTimeIndex(current => findNextTimeIndex());
-		}, stopTimes[nextStopTimeIndex()] - Date.now());
+		}, stopTimes[nextStopTimeIndex()] - new Date(new Date() + relativeOffset));
 	});
 	onCleanup(() => clearTimeout(timeout));
 
