@@ -4,20 +4,14 @@ import TimeToNextBusCard from "../../components/TimeToNextBusCard.astro";
 import NoscriptWarnCard from "../../components/NoscriptWarnCard.astro";
 import rawData from "../../data/busStopData.json";
 
-// export const prerender = true;
+const { stop: slug } = Astro.params;
 
-export function getStaticPaths() {
-    return Object.keys(rawData.stops).map((slug) => {
-        const availibleLines = rawData.lines.filter((line) => line.stops[slug as keyof typeof rawData.stops]);
-
-        return {
-            params: { stop: slug },
-            props: { slug , stopName: rawData.stops[slug as keyof typeof rawData.stops].name, availibleLines },
-        };
-    });
+if (slug === undefined) {
+  return Astro.redirect('/');
 }
 
-const { slug, stopName, availibleLines } = Astro.props;
+const availibleLines = rawData.lines.filter((line) => line.stops[slug as keyof typeof rawData.stops]);
+const stopName = rawData.stops[slug as keyof typeof rawData.stops].name;
 
 ---
 
