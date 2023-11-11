@@ -29,18 +29,17 @@ export default function TimeToNextBusTimer({ rawStopTimes }: TimeToNextBusTimerP
 
 	function findNextTimeIndex() {
 		const newAdjustedTime = new Date(new Date().getTime() + relativeOffset);
-		return stopTimes.findIndex((time) => time > newAdjustedTime)
+		const foundNextTime = stopTimes.findIndex((time) => time > newAdjustedTime);
+		return foundNextTime !== -1 ? foundNextTime : 0;
 	}
 
-
-	const [nextStopTimeIndex, setNextStopTimeIndex] = createSignal(findNextTimeIndex());
+	const initialNextStop = findNextTimeIndex()
+	const [nextStopTimeIndex, setNextStopTimeIndex] = createSignal(initialNextStop);
+	console.log("initialNextStop", initialNextStop, nextStopTimeIndex())
 	const interval = setInterval(() => {
-		const foundNextTime = findNextTimeIndex()
-		setNextStopTimeIndex(current => foundNextTime !== -1 ? foundNextTime : 0);
-		console.log('tick', foundNextTime)
+		setNextStopTimeIndex(current => findNextTimeIndex());
 	}, 1000);
 	onCleanup(() => clearInterval(interval));
-
 
 	return (<>
 		<span class="nextBusTimer">
