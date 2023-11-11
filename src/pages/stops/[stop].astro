@@ -5,12 +5,10 @@ import NoscriptWarnCard from "../../components/NoscriptWarnCard.astro";
 import rawData from "../../data/busStopData.json";
 
 const { stop: slug } = Astro.params;
-
-if (slug === undefined) {
-  return Astro.redirect('/');
-}
-
+if (slug === undefined) return Astro.redirect('/');
 const availibleLines = rawData.lines.filter((line) => line.stops[slug as keyof typeof rawData.stops]);
+if (availibleLines.length === 0) return Astro.redirect('/');
+
 const stopName = rawData.stops[slug as keyof typeof rawData.stops].name;
 
 ---
