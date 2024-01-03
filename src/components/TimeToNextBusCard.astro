@@ -37,13 +37,13 @@ const { lineColor, lineName, rawStopTimes, nextStop, lastStop } = Astro.props;
     </p>
   </div>
   <div
-    class="flex flex-row flex-nowrap items-center pt-5 pb-8 px-3 gap-3 overflow-x-auto overflow-y-hidden relative"
+    class="flex flex-row flex-nowrap items-center pt-5 pb-7 px-3 gap-3 overflow-x-auto overflow-y-hidden relative"
   >
     <TimeToNextBusTimer client:load rawStopTimes={rawStopTimes} />
   </div>
   <div class="px-3">
     <span
-      class="block w-full pointer-events-none relative after:absolute after:bottom-3 after:w-full after:h-2 after:bg-current after:rounded-sm after:shadow-md"
+      class="block w-full pointer-events-none relative before:absolute before:-top-6 before:w-full before:h-2 before:bg-current before:rounded-sm before:shadow-md"
       style=`color: ${lineColor};`></span>
   </div>
 </li>
