@@ -1,8 +1,6 @@
 
 import { createSignal, onCleanup, createEffect } from 'solid-js';
-import { zonedTimeToUtc, utcToZonedTime, getTimezoneOffset } from "date-fns-tz";
-// import { UTCDateMini } from "@date-fns/utc";
-import { isBefore } from "date-fns";
+import { getTimezoneOffset } from "date-fns-tz";
 
 type TimeToNextBusTimerProps = {
 	rawStopTimes: string[];
@@ -34,10 +32,8 @@ export default function TimeToNextBusTimer({ rawStopTimes }: TimeToNextBusTimerP
 	const initialNextStop = findNextTimeIndex()
 	const [nextStopTimeIndex, setNextStopTimeIndex] = createSignal(initialNextStop);
 
-	let timeout;
+	let timeout: number | undefined;
 	createEffect(() => {
-		console.log(stopTimes[nextStopTimeIndex()] - new Date(new Date() + relativeOffset))
-
 		timeout = setTimeout(() => {
 			setNextStopTimeIndex(current => findNextTimeIndex());
 		}, stopTimes[nextStopTimeIndex()] - new Date(new Date() + relativeOffset));
@@ -46,12 +42,14 @@ export default function TimeToNextBusTimer({ rawStopTimes }: TimeToNextBusTimerP
 
 	return (
 		<>
-			<span class="nextBusTimer">
+			<span class="font-bold text-5xl">
 				{timeFormater.format(stopTimes[nextStopTimeIndex()])}
 			</span>
-			<span class="subsequentBusTimer">
-				{timeFormater.format(stopTimes[(nextStopTimeIndex() + 1) % stopTimes.length])}
-			</span>
+			{stopTimes.slice((nextStopTimeIndex() + 1) % stopTimes.length).map(
+				(time) => <span class="font-bold text-4xl text-gray-400">
+					{timeFormater.format(time)}
+				</span>
+			)}
 		</>
 	);
 }

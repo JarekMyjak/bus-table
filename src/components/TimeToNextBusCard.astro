@@ -1,44 +1,51 @@
 ---
 import TimeToNextBusTimer from "./TimeToNextBusTimer.tsx";
+import { Icon } from "astro-icon/components";
 
 interface Props {
-	lineName: string;
-	rawStopTimes: string[];
-	lineColor: string;
+  lineName: string;
+  rawStopTimes: string[];
+  lineColor: string;
+  nextStop?: string;
+  lastStop?: string;
 }
 
-const { lineColor, lineName, rawStopTimes } = Astro.props;
+const { lineColor, lineName, rawStopTimes, nextStop, lastStop } = Astro.props;
 ---
 
-<li class="wrap">
-	<span class="colorIndicator" style=`background-color: ${lineColor};` />
-	<div class="textWrap">
-		<span class="name">{lineName}</span>
-		<TimeToNextBusTimer client:load rawStopTimes={rawStopTimes} />
-		<!-- <TimeToNextBusTimer client:only="solid-js" rawStopTimes={rawStopTimes} /> -->
-	</div>
+<li
+  class="list-none flex flex-col bg-slate-800 rounded-md overflow-hidden shadow"
+  style=`border-color: ${lineColor};`
+>
+  <div
+    class="flex flex-row flex-wrap justify-between bg-slate-700 p-3 shadow"
+    style=`border-color: ${lineColor};`
+  >
+    <p class="text-xl font-medium">
+      <span class="sr-only">linia:</span>
+      <span class="whitespace-nowrap">{lineName}</span>
+    </p>
+    <Icon name="radix-icons:arrow-right" class="mx-1" width={24} height={32} />
+    <p class="text-xl font-medium">
+      <span class="sr-only">następny przystanek:</span>
+      <span class="whitespace-nowrap">{nextStop}</span>
+    </p>
+    <Icon name="radix-icons:arrow-right" class="mx-1" width={24} height={32} />
+    <p class="text-xl font-medium">
+      <span class="sr-only">ostatni przystanek:</span>
+      <span class="whitespace-nowrap">{lastStop}</span>
+    </p>
+  </div>
+  <div
+    class="flex flex-row flex-nowrap items-center pt-5 pb-8 px-3 gap-3 overflow-x-auto overflow-y-hidden relative"
+  >
+    <TimeToNextBusTimer client:load rawStopTimes={rawStopTimes} />
+  </div>
+  <div class="px-3">
+    <span
+      class="block w-full pointer-events-none relative after:absolute after:bottom-3 after:w-full after:h-2 after:bg-current after:rounded-sm after:shadow-md"
+      style=`color: ${lineColor};`></span>
+  </div>
 </li>
 
-<style>
-	.wrap {
-		list-style: none;
-		display: flex;
-		padding: 10px;
-		background-color: #23262d;
-		background-image: none;
-		background-size: 400%;
-		border-radius: 7px;
-		box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
-		overflow: hidden;
-		gap: 10px;
-	}
-	.textWrap{
-		display: flex;
-		flex-flow: column nowrap;
-	}
-	.colorIndicator {
-		width: 10px;
-		height: 100%;
-		box-shadow: inset 0px 0px 1px 1px rgb(0 0 0 / 20%);
-	}
-</style>
+<style></style>
