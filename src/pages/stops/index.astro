@@ -8,9 +8,9 @@ const stops = rawData.stops;
 ---
 
 <Layout title="All stops list.">
-    <main>
-        <h1>All bus stops</h1>
-        <ul role="list" class="link-card-grid">
+    <main class="container max-w-screen-xl mx-auto px-4">
+        <h1 class="font-sans text-4xl font-bold text-center py-10">All bus stops</h1>
+        <ul role="list" class="flex flex-col gap-5">
             {
                 Object.keys(stops).map((slug) => {
                     return (
