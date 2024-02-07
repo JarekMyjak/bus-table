@@ -78,7 +78,7 @@ const { title, heading, backButton, navCurrent } = Astro.props;
                 <a
                   href={navItem.url}
                   aria-current={isCurrent.toString()}
-                  class="relative before:hidden active:before:block hover:before:block aria-[current='true']:before:block aria-[current='true']:before:bg-slate-100/15 hover:before:border before:absolute before:-inset-2 before:blur-[2px]  backdrop-blur before:rounded-xl before:-z-10 z-10 after:absolute after:-inset-3"
+                  class="relative before:hidden active:before:block hover:before:block aria-[current='true']:before:block aria-[current='true']:before:bg-slate-100/15 hover:before:border before:absolute before:-top-2 before:-bottom-2 before:-left-2 before:-right-2 before:blur-[2px]  backdrop-blur before:rounded-xl before:-z-10 z-10 after:absolute after:-inset-3"
                 >
                   <Icon name={navItem.icon} class="" width={44} height={44} />
                   <span class="sr-only">{navItem.name}</span>
