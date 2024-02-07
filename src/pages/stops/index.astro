@@ -4,27 +4,21 @@ import ListCard from "../../components/ListCard.astro";
 import rawData from "../../data/busStopData.json";
 
 const stops = rawData.stops;
-
 ---
 
-<Layout title="All stops list.">
-    <main class="container max-w-screen-xl mx-auto px-4">
-        <h1 class="font-sans text-4xl font-bold text-center py-10">All bus stops</h1>
-        <ul role="list" class="flex flex-col gap-5">
-            {
-                Object.keys(stops).map((slug) => {
-                    return (
-                        <ListCard
-                            href={`stops/${slug}`}
-                            title={stops[slug as keyof typeof stops].name}
-                        />
-                    );
-                })
-            }
-        </ul>
-    </main>
+<Layout title="All stops list" heading="All stops list" navCurrent="stops">
+  <ul role="list" class="flex flex-col gap-5">
+    {
+      Object.keys(stops).map((slug) => {
+        return (
+          <ListCard
+            href={`stops/${slug}`}
+            title={stops[slug as keyof typeof stops].name}
+          />
+        );
+      })
+    }
+  </ul>
 </Layout>
 
-<style>
-
-</style>
+<style></style>

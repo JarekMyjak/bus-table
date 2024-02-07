@@ -1,51 +1,122 @@
 ---
+import { Icon } from "astro-icon/components";
+
 interface Props {
-	title: string;
+  title: string;
+  heading: string;
+  backButton?: {
+    url: string;
+    label: string;
+  };
+  navCurrent?: "stops" | "lines" | "favourites";
 }
 
-const { title } = Astro.props;
+const bottomNavigation = [
+  { name: "stops", url: "/stops", icon: "tabler:bus-stop" },
+  { name: "lines", url: "/lines", icon: "tabler:road" },
+  { name: "favourites", url: "/favourites", icon: "tabler:star" },
+];
+
+const { title, heading, backButton, navCurrent } = Astro.props;
 ---
 
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="description" content="Astro description" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
-		<title>{title}</title>
-	</head>
-	<body>
-		<slot />
-	</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="Astro description" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+  </head>
+  <body>
+    <header
+      class="sticky top-0 z-50 w-full border-b border-opacity-85 backdrop-blur supports-[backdrop-filter]:bg-background/60"
+    >
+      <div
+        class="container flex flex-row items-center justify-between px-6 mx-auto max-w-screen-xl"
+      >
+        <h1 class="font-sans text-3xl font-bold text-center order-2">
+          {heading}
+        </h1>
+        {
+          backButton ? (
+            <nav>
+              <a
+                href={backButton.url}
+                class="flex items-center justify-center w-14 h-14 order-1"
+              >
+                <Icon
+                  name="radix-icons:arrow-left"
+                  class="mx-1"
+                  width={24}
+                  height={32}
+                />
+                <span class="sr-only">{backButton.label}</span>
+              </a>
+            </nav>
+          ) : (
+            <div class="flex items-center justify-center w-14 h-14 order-1" />
+          )
+        }
+        <div class="flex items-center justify-center w-14 h-14 order-3"></div>
+      </div>
+    </header>
+    <main class="container mx-auto max-w-screen-xl px-4 py-4">
+      <slot />
+    </main>
+    <nav class="h-20">
+      <ul
+        class="fixed bottom-0 w-screen flex flex-row justify-evenly p-4 border-t border-opacity-85 backdrop-blur"
+      >
+        {
+          bottomNavigation.map((navItem) => {
+            const isCurrent = navItem.name === navCurrent
+            return (
+              <li>
+                <a
+                  href={navItem.url}
+                  aria-current={isCurrent.toString()}
+                  class="relative before:hidden active:before:block hover:before:block aria-[current='true']:before:block aria-[current='true']:before:bg-slate-100/15 hover:before:border before:absolute before:-inset-2 before:blur-[2px]  backdrop-blur before:rounded-xl before:-z-10 z-10 after:absolute after:-inset-3"
+                >
+                  <Icon name={navItem.icon} class="" width={44} height={44} />
+                  <span class="sr-only">{navItem.name}</span>
+                </a>
+              </li>
+            );
+          })
+        }
+      </ul>
+    </nav>
+  </body>
 </html>
 <style is:global>
-	:root {
-		--accent: 136, 58, 234;
-		--accent-light: 224, 204, 250;
-		--accent-dark: 49, 10, 101;
-		--accent-gradient: linear-gradient(
-			45deg,
-			rgb(var(--accent)),
-			rgb(var(--accent-light)) 30%,
-			white 60%
-		);
-	}
-	html {
-		font-family: system-ui, sans-serif;
-		background: #13151a;
-		color: white;
-	}
-	code {
-		font-family:
-			Menlo,
-			Monaco,
-			Lucida Console,
-			Liberation Mono,
-			DejaVu Sans Mono,
-			Bitstream Vera Sans Mono,
-			Courier New,
-			monospace;
-	}
+  :root {
+    --accent: 136, 58, 234;
+    --accent-light: 224, 204, 250;
+    --accent-dark: 49, 10, 101;
+    --accent-gradient: linear-gradient(
+      45deg,
+      rgb(var(--accent)),
+      rgb(var(--accent-light)) 30%,
+      white 60%
+    );
+  }
+  html {
+    font-family: system-ui, sans-serif;
+    background: #13151a;
+    color: white;
+  }
+  code {
+    font-family:
+      Menlo,
+      Monaco,
+      Lucida Console,
+      Liberation Mono,
+      DejaVu Sans Mono,
+      Bitstream Vera Sans Mono,
+      Courier New,
+      monospace;
+  }
 </style>
