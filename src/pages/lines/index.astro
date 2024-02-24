@@ -3,14 +3,22 @@ import Layout from "../../layouts/Layout.astro";
 import ListCard from "../../components/ListCard.astro";
 import rawData from "../../data/busStopData.json";
 
-const stops = rawData.stops;
+const lines = rawData.lines;
 ---
 
 <Layout title="Lines" heading="Lines" navCurrent="lines">
-  <div class="flex h-full items-center justify-center">
-    <h2>Lines are coming soon</h2>
-
-  </div>
+  <ul role="list" class="flex flex-col gap-5">
+    {
+      lines.map((line) => {
+        return (
+          <ListCard
+            href={`lines/${line.name}`}
+            title={line.name}
+          />
+        );
+      })
+    }
+  </ul>
 </Layout>
 
 <style></style>
