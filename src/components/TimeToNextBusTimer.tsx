@@ -15,7 +15,7 @@ export default function TimeToNextBusTimer({ rawStopTimes }: TimeToNextBusTimerP
 	const relativeOffset = offset - (now - utcTimeStamp);
 	const adjustedDate = new Date(now + relativeOffset);
 
-	const stopTimes = rawStopTimes.map((rawTime) => {
+	const stopTimes = rawStopTimes.filter(rawTime => rawTime !== "").map((rawTime) => {
 		const [hours, minutes] = rawTime.split(":").map(n => Number(n));
 		const timeCopy = new Date(adjustedDate)
 		timeCopy.setHours(hours, minutes, 59)
@@ -32,11 +32,11 @@ export default function TimeToNextBusTimer({ rawStopTimes }: TimeToNextBusTimerP
 	const initialNextStop = findNextTimeIndex()
 	const [nextStopTimeIndex, setNextStopTimeIndex] = createSignal(initialNextStop);
 
-	let timeout: number | undefined;
+	let timeout: NodeJS.Timeout | undefined;
 	createEffect(() => {
 		timeout = setTimeout(() => {
 			setNextStopTimeIndex(current => findNextTimeIndex());
-		}, stopTimes[nextStopTimeIndex()] - new Date(new Date() + relativeOffset));
+		}, Number(stopTimes[nextStopTimeIndex()]) - Number(new Date(Number(new Date()) + relativeOffset)));
 	});
 	onCleanup(() => clearTimeout(timeout));
 

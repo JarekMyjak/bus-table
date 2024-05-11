@@ -13,8 +13,7 @@ if (lineData === undefined) return Astro.redirect("/lines");
 // if (availibleLines.length === 0) return Astro.redirect("/lines");
 
 // const stopName = rawData.stops[slug as keyof typeof rawData.stops].name;
-const title = ` timetable`;
-
+const title = `${lineData.name} timetable`;
 
 let maxTableLength = 0;
 Object.values(lineData.stops).forEach((stop)=>{
@@ -27,7 +26,7 @@ console.log(maxTableLength);
 <Layout
   title={title}
   heading={""}
-  navCurrent="stops"
+  navCurrent="lines"
   backButton={{ url: "/lines", label: "back to stops" }}
 >
   <div class="min-w-full overflow-x-scroll relative rounded-lg border">
