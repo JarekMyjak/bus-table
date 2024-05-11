@@ -1,0 +1,15 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+---
+
+<Layout title="Cookie consent" heading="Cookie consent" navCurrent="favourites">
+  <div class="flex h-full items-center justify-center flex-col">
+    <h2>Wymagana zgoda na przechowywanie cookies</h2>
+    <p>Strona wykorzystuje cookies w celu przechowywania informacji o ulubionych liniach i przystankach</p>
+    <form action="/favourites/cookie/consent">
+      <button type="submit">Zgoda</button>
+    </form>
+  </div>
+</Layout>
+
+<style></style>

@@ -1,0 +1,33 @@
+---
+import { Icon } from "astro-icon/components";
+
+interface Props {
+	value: string;
+	name: string;
+}
+
+const { value, name } = Astro.props;
+
+const current = Astro.cookies.get("favourites")?.value.split(",") ?? [];
+
+let isAdded = false;
+if (current.includes(value)) {
+	isAdded = true;
+}
+---
+
+<form
+	action={isAdded ? "/favourites/remove" : "/favourites/add"}
+	class="order-3"
+>
+	<input type="hidden" value={value} name="key" />
+	<button type="submit" class="flex items-center justify-center w-14 h-14">
+		<Icon
+			name={isAdded ? "radix-icons:star-filled" : "radix-icons:star"}
+			class="mx-1"
+			width={24}
+			height={32}
+		/>
+		<span class="sr-only">{isAdded ? `remove ${name} from favourites` : `add ${name} to favourites`}</span>
+	</button>
+</form>

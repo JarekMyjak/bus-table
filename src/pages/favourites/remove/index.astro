@@ -1,0 +1,19 @@
+---
+if (!Astro.cookies.has("cookieConsent")) {
+  return Astro.redirect('/favourites/cookie');
+}
+
+const redirectLocation = Astro.request.headers.get("referer") ?? "/";
+const params = new URL(Astro.request.url);
+const newKey = params.searchParams.get("key")!;
+const current = Astro.cookies.get("favourites")?.value.split(",") ?? [];
+const filtered = current.filter((key) => {return key !== newKey})
+
+return new Response(null, {
+  status: 302,
+  headers: {
+    Location: redirectLocation.toString(),
+    "Set-Cookie": `favourites=${filtered}; Path=/;`,
+  },
+});
+---

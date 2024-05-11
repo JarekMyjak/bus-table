@@ -3,13 +3,19 @@ import Layout from "../../layouts/Layout.astro";
 import ListCard from "../../components/ListCard.astro";
 import rawData from "../../data/busStopData.json";
 
-const stops = rawData.stops;
+if (!Astro.cookies.has("cookieConsent")) {
+  return Astro.redirect('/favourites/cookie');
+}
 ---
 
 <Layout title="Favourites" heading="Favourites" navCurrent="favourites">
   <div class="flex h-full items-center justify-center">
     <h2>favourites are coming soon</h2>
 
+    <form action="/favourites/add">
+      <input type="hidden" value="oberconiowka" name="key"/>
+      <button type="submit">Add oberconiowka to favourites</button>
+    </form>
   </div>
 </Layout>
 

@@ -1,0 +1,9 @@
+---
+return new Response(null, {
+  status: 302,
+  headers: {
+    Location: '/favourites',
+    'Set-Cookie': "cookieConsent=true; Path=/;",
+  },
+})
+---
