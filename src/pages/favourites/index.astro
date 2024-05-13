@@ -4,18 +4,39 @@ import ListCard from "../../components/ListCard.astro";
 import rawData from "../../data/busStopData.json";
 
 if (!Astro.cookies.has("cookieConsent")) {
-  return Astro.redirect('/favourites/cookie');
+  return Astro.redirect("/favourites/cookie");
 }
+const favourites = Astro.cookies.get("favourites")?.value.split(",") ?? [];
+
+const stops = rawData.stops;
+const filteredStops = Object.keys(stops).filter((stop) => favourites.includes(stop));
+
+const lines = rawData.lines;
+const filteredLines = lines.filter((line) => favourites.includes(line.name));
+// const filteredLines = lines.filter((line) => line.name === "11-1");
+
+const Combined = [];
 ---
 
 <Layout title="Favourites" heading="Favourites" navCurrent="favourites">
   <div class="flex h-full items-center justify-center">
-    <h2>favourites are coming soon</h2>
-
-    <form action="/favourites/add">
-      <input type="hidden" value="oberconiowka" name="key"/>
-      <button type="submit">Add oberconiowka to favourites</button>
-    </form>
+    <ul role="list" class="flex flex-col gap-5">
+      {
+        filteredLines.map((line) => {
+          return <ListCard href={`lines/${line.name}`} title={line.name} />;
+        })
+      }
+      {
+        filteredStops.map((slug) => {
+          return (
+            <ListCard
+              href={`stops/${slug}`}
+              title={stops[slug as keyof typeof stops].name}
+            />
+          );
+        })
+      }
+    </ul>
   </div>
 </Layout>
 

@@ -16,9 +16,9 @@ if (lineData === undefined) return Astro.redirect("/lines");
 const title = `${lineData.name} timetable`;
 
 let maxTableLength = 0;
-Object.values(lineData.stops).forEach((stop)=>{
-  maxTableLength = Math.max(maxTableLength, stop.times.length)
-})
+Object.values(lineData.stops).forEach((stop) => {
+  maxTableLength = Math.max(maxTableLength, stop.times.length);
+});
 
 console.log(maxTableLength);
 ---
@@ -28,24 +28,27 @@ console.log(maxTableLength);
   heading={""}
   navCurrent="lines"
   backButton={{ url: "/lines", label: "back to stops" }}
+  favButton={{ value: slug, name: lineData.name }}
 >
   <div class="min-w-full overflow-x-scroll relative rounded-lg border">
-    <table
-      class="table-auto border-collapse "
-    >
-      <tbody class="border-none ">
+    <table class="table-auto border-collapse">
+      <tbody class="border-none">
         {
           Object.values(lineData.stops).map((stop) => {
             return (
               <tr class="bg-slate-800 odd:bg-slate-900 border-none">
                 <th class="sticky left-0 p-0 bg-slate-900">
-                  <div class=" bg-slate-700 p-3 border-b border-slate-900 border-opacity-50">{stop.name}</div>
+                  <div class="bg-slate-700 p-3 border-b border-slate-900 border-opacity-50">
+                    {stop.name}
+                  </div>
                 </th>
 
-                {Array.from({...stop.times, length:maxTableLength}).map((_, index) => {
-                  const time = stop.times[index]
-                  return <td class=" p-3 shadow border-none">{time}</td>
-                })}
+                {Array.from({ ...stop.times, length: maxTableLength }).map(
+                  (_, index) => {
+                    const time = stop.times[index];
+                    return <td class=" p-3 shadow border-none">{time}</td>;
+                  },
+                )}
               </tr>
             );
           })
