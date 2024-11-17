@@ -3,9 +3,9 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
-    "dev": "node scrapeConverted.js && astro dev",
+    "dev": "astro dev",
     "start": "astro dev",
-    "build": "node scrapeConverted.js astro build",
+    "build": "astro build",
     "preview": "astro preview",
     "astro": "astro"
   },
