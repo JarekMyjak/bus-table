@@ -3,9 +3,9 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
-    "dev": "astro dev",
+    "dev": "node scrapeConverted.js && astro dev",
     "start": "astro dev",
-    "build": "astro build",
+    "build": "node scrapeConverted.js astro build",
     "preview": "astro preview",
     "astro": "astro"
   },
@@ -22,6 +22,7 @@
   },
   "devDependencies": {
     "@iconify-json/radix-icons": "^1.1.14",
-    "@iconify-json/tabler": "^1.1.110"
+    "@iconify-json/tabler": "^1.1.110",
+    "puppeteer": "^23.8.0"
   }
 }
