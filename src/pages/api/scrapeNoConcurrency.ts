@@ -1,7 +1,6 @@
 import { JSDOM } from 'jsdom'
 import { fetch } from 'undici';
 import { writeFileSync } from 'fs'
-import { Effect } from 'effect';
 
 function slugify(str: string) {
     str = str.normalize('NFKD')
@@ -52,44 +51,36 @@ export async function GET(): Promise<Response> {
                 const lineStops: stopsEntry = {}
                 const linePageHtml = await fetch(`https://www.rozkladzik.pl/zakopane/rozklad_jazdy.html?l=${line.number}&d=${direction}&b=0&dt=0`).then(res => res.text());
                 const linePage = new JSDOM(linePageHtml);
-                const stopNames = [...linePage.window.document.querySelectorAll('.bs a')].map((element) => (element.textContent ??= '') as string)
+                const stopNames = [...linePage.window.document.querySelectorAll('.bs a')].map((element) => element.textContent ??= '')
 
-                await Effect.all(
-                    stopNames.map((stopName, stopIndex) => {
-                        return Effect.promise<unknown>( async (resolve) => {
-                            const stopSlug = slugify(stopName)
-                            stops[stopSlug] = { name: stopName }
+                for (const [stopIndex, stopName] of stopNames.entries()) {
+                    const stopSlug = slugify(stopName)
+                    stops[stopSlug] = { name: stopName }
 
-                            const stopPageHtml = await fetch(`https://www.rozkladzik.pl/zakopane/rozklad_jazdy.html?l=${line.number}&d=${direction}&b=${stopIndex}&dt=0`).then(res => res.text());
-                            const stopPage = new JSDOM(stopPageHtml);
+                    const stopPageHtml = await fetch(`https://www.rozkladzik.pl/zakopane/rozklad_jazdy.html?l=${line.number}&d=${direction}&b=${stopIndex}&dt=0`).then(res => res.text());
+                    const stopPage = new JSDOM(stopPageHtml);
 
-                            const stopTimes = (() => {
-                                const timesArr = []
-                                const rowElements = [...stopPage.window.document
-                                    .querySelectorAll('#time_table tbody tr')]
+                    const stopTimes = (() => {
+                        const timesArr = []
+                        const rowElements = [...stopPage.window.document
+                            .querySelectorAll('#time_table tbody tr')]
 
-                                for (const row of rowElements) {
-                                    const hour = row.querySelector("td.h")?.textContent as string
-                                    const minutes = [...row.querySelectorAll("td.m")].map((min) => min?.textContent as string)
+                        for (const row of rowElements) {
+                            const hour = row.querySelector("td.h")?.textContent as string
+                            const minutes = [...row.querySelectorAll("td.m")].map((min) => min?.textContent as string)
 
-                                    for (const minuteInstance of minutes) {
-                                        timesArr.push(`${hour}:${minuteInstance.split(' ')[0]}`)
-                                    }
-                                }
-
-                                return timesArr
-                            })()
-
-                            lineStops[stopSlug] = {
-                                name: stopName, times: stopTimes
+                            for (const minuteInstance of minutes) {
+                                timesArr.push(`${hour}:${minuteInstance.split(' ')[0]}`)
                             }
+                        }
 
-                            return
-                        })
-                    }),
-                    { concurrency: "unbounded" }
-                )
+                        return timesArr
+                    })()
 
+                    lineStops[stopSlug] = {
+                        name: stopName, times: stopTimes
+                    }
+                }
                 lines.push({
                     name: `${line.number}-${direction}`,
                     color: line.color,
@@ -108,7 +99,7 @@ export async function GET(): Promise<Response> {
         responseMessage = "An error occurred during scraping or saving data" + (error instanceof Error ? error.message : String(error));
     }
 
-    return new Response("responseMessage", {
+    return new Response(responseMessage, {
         status: 200,
         headers: {
             "Content-Type": "application/json",
