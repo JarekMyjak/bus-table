@@ -53,42 +53,43 @@ export async function GET(): Promise<Response> {
                 const linePageHtml = await fetch(`https://www.rozkladzik.pl/zakopane/rozklad_jazdy.html?l=${line.number}&d=${direction}&b=0&dt=0`).then(res => res.text());
                 const linePage = new JSDOM(linePageHtml);
                 const stopNames = [...linePage.window.document.querySelectorAll('.bs a')].map((element) => (element.textContent ??= '') as string)
+                Effect.runPromise(
+                    Effect.all(
+                        stopNames.map((stopName, stopIndex) => {
+                            return Effect.promise<unknown>(async (resolve) => {
+                                const stopSlug = slugify(stopName)
+                                stops[stopSlug] = { name: stopName }
 
-                await Effect.all(
-                    stopNames.map((stopName, stopIndex) => {
-                        return Effect.promise<unknown>( async (resolve) => {
-                            const stopSlug = slugify(stopName)
-                            stops[stopSlug] = { name: stopName }
+                                const stopPageHtml = await fetch(`https://www.rozkladzik.pl/zakopane/rozklad_jazdy.html?l=${line.number}&d=${direction}&b=${stopIndex}&dt=0`).then(res => res.text());
+                                const stopPage = new JSDOM(stopPageHtml);
+                                // console.log(`Scraping stop ${stopName} for line ${line.number}-${direction}...`);
 
-                            const stopPageHtml = await fetch(`https://www.rozkladzik.pl/zakopane/rozklad_jazdy.html?l=${line.number}&d=${direction}&b=${stopIndex}&dt=0`).then(res => res.text());
-                            const stopPage = new JSDOM(stopPageHtml);
+                                const stopTimes = (() => {
+                                    const timesArr = []
+                                    const rowElements = [...stopPage.window.document
+                                        .querySelectorAll('#time_table tbody tr')]
 
-                            const stopTimes = (() => {
-                                const timesArr = []
-                                const rowElements = [...stopPage.window.document
-                                    .querySelectorAll('#time_table tbody tr')]
+                                    for (const row of rowElements) {
+                                        const hour = row.querySelector("td.h")?.textContent as string
+                                        const minutes = [...row.querySelectorAll("td.m")].map((min) => min?.textContent as string)
 
-                                for (const row of rowElements) {
-                                    const hour = row.querySelector("td.h")?.textContent as string
-                                    const minutes = [...row.querySelectorAll("td.m")].map((min) => min?.textContent as string)
-
-                                    for (const minuteInstance of minutes) {
-                                        timesArr.push(`${hour}:${minuteInstance.split(' ')[0]}`)
+                                        for (const minuteInstance of minutes) {
+                                            timesArr.push(`${hour}:${minuteInstance.split(' ')[0]}`)
+                                        }
                                     }
+
+                                    return timesArr
+                                })()
+
+                                lineStops[stopSlug] = {
+                                    name: stopName, times: stopTimes
                                 }
 
-                                return timesArr
-                            })()
-
-                            lineStops[stopSlug] = {
-                                name: stopName, times: stopTimes
-                            }
-
-                            return
-                        })
-                    }),
-                    { concurrency: "unbounded" }
-                )
+                                return
+                            })
+                        }),
+                        { concurrency: "unbounded" }
+                    ))
 
                 lines.push({
                     name: `${line.number}-${direction}`,
