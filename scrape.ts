@@ -43,57 +43,61 @@ type stopsEntry = Record<string, { name: string, times: Array<string> }>
 const stops: Record<string, { name: string }> = {}
 const lines: Array<{ name: string, color: string, stops: stopsEntry }> = []
 
-for (const line of linesToScrape) {
-    for (const direction of [0, 1]) {
-        const lineStops: stopsEntry = {}
-        await page.goto(`https://www.rozkladzik.pl/zakopane/rozklad_jazdy.html?l=${line.number}&d=${direction}&b=0&dt=0`);
-        // await page.screenshot({ path: `${line}.png` })
-        const stopNames = await page.evaluate(() => {
-            return [...document.querySelectorAll('.bs a')].map((element) => element.textContent ??= '')
-        })
-        for (const [stopIndex, stopName] of stopNames.entries()) {
-            const stopSlug = slugify(stopName)
-            stops[stopSlug] = { name: stopName }
-
-            await page.goto(`https://www.rozkladzik.pl/zakopane/rozklad_jazdy.html?l=${line.number}&d=${direction}&b=${stopIndex}&dt=0`);
-
-            const stopTimes = await page.evaluate(() => {
-                const timesArr = []
-                const rowElements = [...document
-                    .querySelectorAll('#time_table tbody tr')]
-
-                for (const row of rowElements) {
-                    const hour = row.querySelector("td.h")?.textContent as string
-                    const minutes = [...row.querySelectorAll("td.m")].map((min) => min?.textContent as string)
-
-                    for (const minuteInstance of minutes) {
-                        timesArr.push(`${hour}:${minuteInstance.split(' ')[0]}`)
+export async function GET(request: Request) {
+    for (const line of linesToScrape) {
+        for (const direction of [0, 1]) {
+            const lineStops: stopsEntry = {}
+            await page.goto(`https://www.rozkladzik.pl/zakopane/rozklad_jazdy.html?l=${line.number}&d=${direction}&b=0&dt=0`);
+            const stopNames = await page.evaluate(() => {
+                return [...document.querySelectorAll('.bs a')].map((element) => element.textContent ??= '')
+            })
+            for (const [stopIndex, stopName] of stopNames.entries()) {
+                const stopSlug = slugify(stopName)
+                stops[stopSlug] = { name: stopName }
+                
+                await page.goto(`https://www.rozkladzik.pl/zakopane/rozklad_jazdy.html?l=${line.number}&d=${direction}&b=${stopIndex}&dt=0`);
+                
+                const stopTimes = await page.evaluate(() => {
+                    const timesArr = []
+                    const rowElements = [...document
+                        .querySelectorAll('#time_table tbody tr')]
+                        
+                        for (const row of rowElements) {
+                            const hour = row.querySelector("td.h")?.textContent as string
+                            const minutes = [...row.querySelectorAll("td.m")].map((min) => min?.textContent as string)
+                            
+                            for (const minuteInstance of minutes) {
+                                timesArr.push(`${hour}:${minuteInstance.split(' ')[0]}`)
+                            }
+                        }
+                        
+                        return timesArr
+                    })
+                    
+                    lineStops[stopSlug] = {
+                        name: stopName, times: stopTimes
                     }
                 }
-
-                return timesArr
+                lines.push({
+                    name: `${line.number}-${direction}`,
+                    color: line.color,
+                    stops: lineStops
             })
-
-            lineStops[stopSlug] = {
-                name: stopName, times: stopTimes
-            }
         }
-        lines.push({
-            name: `${line.number}-${direction}`,
-            color: line.color,
-            stops: lineStops
-        })
     }
+    
+    const output = { stops, lines }
+    const jsonOutput = JSON.stringify(output)
+    let responseMessage
+    try {
+        writeFileSync('./src/data/busStopData.json', jsonOutput, 'utf8');
+        console.log('Data successfully saved to disk');
+        responseMessage = "Scraping and saving data completed successfully";
+    } catch (error) {
+        console.log('An error has occurred ', error);
+        responseMessage = "An error occurred during scraping or saving data" + (error instanceof Error ? error.message : String(error));
+    }
+    
+    await browser.close();
+    return new Response("Scraping completed: " + responseMessage);
 }
-
-const output = { stops, lines }
-const jsonOutput = JSON.stringify(output)
-
-try {
-    writeFileSync('./src/data/busStopData.json', jsonOutput, 'utf8');
-    console.log('Data successfully saved to disk');
-} catch (error) {
-    console.log('An error has occurred ', error);
-}
-
-await browser.close();

@@ -18,7 +18,7 @@ export default function TimeToNextBusTimer({ rawStopTimes }: TimeToNextBusTimerP
 	const stopTimes = rawStopTimes.filter(rawTime => rawTime !== "").map((rawTime) => {
 		const [hours, minutes] = rawTime.split(":").map(n => Number(n));
 		const timeCopy = new Date(adjustedDate)
-		timeCopy.setHours(hours, minutes, 59)
+		timeCopy.setHours(hours ?? 0, minutes, 59)
 
 		return timeCopy;
 	});
