@@ -1,7 +1,6 @@
 import { JSDOM } from 'jsdom'
 import { fetch } from 'undici';
 import { writeFileSync } from 'fs'
-import { time } from 'console';
 
 function slugify(str: string) {
     str = str.normalize('NFKD')
