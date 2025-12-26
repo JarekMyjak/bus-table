@@ -1,5 +1,7 @@
 import { JSDOM } from 'jsdom'
+import { fetch } from 'undici';
 import { writeFileSync } from 'fs'
+import { time } from 'console';
 
 function slugify(str: string) {
     str = str.normalize('NFKD')
@@ -45,8 +47,8 @@ export async function GET(): Promise<Response> {
     let responseMessage
     try {
         for (const line of linesToScrape) {
-            console.log(`Scraping line ${line.number}...`);
             for (const direction of [0, 1]) {
+                console.log(`Scraping line ${line.number}-${direction}...`);
                 const lineStops: stopsEntry = {}
                 const linePageHtml = await fetch(`https://www.rozkladzik.pl/zakopane/rozklad_jazdy.html?l=${line.number}&d=${direction}&b=0&dt=0`).then(res => res.text());
                 const linePage = new JSDOM(linePageHtml);
@@ -58,7 +60,7 @@ export async function GET(): Promise<Response> {
 
                     const stopPageHtml = await fetch(`https://www.rozkladzik.pl/zakopane/rozklad_jazdy.html?l=${line.number}&d=${direction}&b=${stopIndex}&dt=0`).then(res => res.text());
                     const stopPage = new JSDOM(stopPageHtml);
-                    
+
                     const stopTimes = (() => {
                         const timesArr = []
                         const rowElements = [...stopPage.window.document
@@ -88,7 +90,7 @@ export async function GET(): Promise<Response> {
             }
         }
 
-        const output = { stops, lines }
+        const output = { stops, lines, timestamp: Date.now() }
         const jsonOutput = JSON.stringify(output)
         writeFileSync('./src/data/busStopData.json', jsonOutput, 'utf8');
         console.log('Data successfully saved to disk');

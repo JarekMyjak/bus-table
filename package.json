@@ -19,7 +19,8 @@
     "date-fns-tz": "^2.0.1",
     "jsdom": "^27.4.0",
     "solid-js": "^1.8.16",
-    "tailwindcss": "^3.4.3"
+    "tailwindcss": "^3.4.3",
+    "undici": "^7.16.0"
   },
   "devDependencies": {
     "@iconify-json/radix-icons": "^1.1.14",

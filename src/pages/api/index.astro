@@ -1,0 +1,12 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import rawData from "../../data/busStopData.json";
+
+const timestamp = rawData.timestamp;
+---
+
+<Layout title="All stops list" heading="All stops list" navCurrent="stops">
+    <p class="text-sm text-slate-400 mb-4">Data last updated at: {new Date(timestamp).toLocaleString()}</p>
+</Layout>
+
+<style></style>
