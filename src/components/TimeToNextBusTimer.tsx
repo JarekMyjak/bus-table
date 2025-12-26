@@ -29,8 +29,7 @@ export default function TimeToNextBusTimer({ rawStopTimes }: TimeToNextBusTimerP
 		return foundNextTime !== -1 ? foundNextTime : 0;
 	}
 
-	const initialNextStop = findNextTimeIndex()
-	const [nextStopTimeIndex, setNextStopTimeIndex] = createSignal(initialNextStop);
+	const [nextStopTimeIndex, setNextStopTimeIndex] = createSignal(findNextTimeIndex());
 
 	let timeout: NodeJS.Timeout | undefined;
 	createEffect(() => {
@@ -40,12 +39,18 @@ export default function TimeToNextBusTimer({ rawStopTimes }: TimeToNextBusTimerP
 	});
 	onCleanup(() => clearTimeout(timeout));
 
+	const higlightedTime = stopTimes[nextStopTimeIndex()];
+	const remainingTimes = [
+		...stopTimes.slice((nextStopTimeIndex() + 1)),
+		...stopTimes.slice(0, (nextStopTimeIndex()))
+	];
+
 	return (
 		<>
 			<span class="font-bold text-5xl">
-				{timeFormater.format(stopTimes[nextStopTimeIndex()])}
+				{timeFormater.format(higlightedTime)}
 			</span>
-			{stopTimes.slice((nextStopTimeIndex() + 1) % stopTimes.length).map(
+			{remainingTimes.map(
 				(time) => <span class="font-bold text-4xl text-gray-400">
 					{timeFormater.format(time)}
 				</span>

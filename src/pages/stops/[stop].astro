@@ -24,6 +24,7 @@ const title = `${stopName} timetable`
           );
           const nextStop = line.stops[stopsArr[stopIndex + 1] as keyof typeof line.stops]?.name
           const lastStop = line.stops[stopsArr.at(-1) as keyof typeof line.stops]?.name
+
           return (
             <TimeToNextBusCard
               lineColor={line.color}
