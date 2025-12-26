@@ -23,10 +23,19 @@ const linesToScrape = [{
     color: "#76ae40",
 },{
     number: 18,
-    color: "#344496",
+    color: "#9e173d",
 },{
     number: 19,
     color: "#6cabe1",
+},{
+    number: 21,
+    color: "#7e4d98",
+},{
+    number: 23,
+    color: "#856037",
+},{
+    number: 24,
+    color: "#c42d23",
 }]
 
 type stopsEntry = Record<string, { name: string, times: Array<string> }>
