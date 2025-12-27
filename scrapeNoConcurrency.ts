@@ -80,6 +80,7 @@ export async function GET(): Promise<Response> {
                     lineStops[stopSlug] = {
                         name: stopName, times: stopTimes
                     }
+                    console.log(`Scraped stop ${stopName} stops ${stopTimes}`);
                 }
                 lines.push({
                     name: `${line.number}-${direction}`,

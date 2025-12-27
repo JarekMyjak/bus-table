@@ -53,7 +53,7 @@ export async function GET(): Promise<Response> {
                 const linePageHtml = await fetch(`https://www.rozkladzik.pl/zakopane/rozklad_jazdy.html?l=${line.number}&d=${direction}&b=0&dt=0`).then(res => res.text());
                 const linePage = new JSDOM(linePageHtml);
                 const stopNames = [...linePage.window.document.querySelectorAll('.bs a')].map((element) => (element.textContent ??= '') as string)
-                Effect.runPromise(
+                const stopData = await Effect.runPromise(
                     Effect.all(
                         stopNames.map((stopName, stopIndex) => {
                             return Effect.promise<unknown>(async (resolve) => {
@@ -66,8 +66,7 @@ export async function GET(): Promise<Response> {
 
                                 const stopTimes = (() => {
                                     const timesArr = []
-                                    const rowElements = [...stopPage.window.document
-                                        .querySelectorAll('#time_table tbody tr')]
+                                    const rowElements = [...stopPage.window.document.querySelectorAll('#time_table tbody tr')]
 
                                     for (const row of rowElements) {
                                         const hour = row.querySelector("td.h")?.textContent as string
@@ -81,15 +80,21 @@ export async function GET(): Promise<Response> {
                                     return timesArr
                                 })()
 
-                                lineStops[stopSlug] = {
-                                    name: stopName, times: stopTimes
-                                }
+                                // lineStops[stopSlug] = {
+                                //     name: stopName, times: stopTimes
+                                // }
 
-                                return
+                                return { stopSlug, stopName, stopTimes }
                             })
                         }),
                         { concurrency: "unbounded" }
                     ))
+
+                stopData.forEach(({ stopSlug, stopName, stopTimes }) => {
+                    lineStops[stopSlug] = {
+                        name: stopName, times: stopTimes
+                    }
+                })
 
                 lines.push({
                     name: `${line.number}-${direction}`,

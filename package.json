@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "node scrape.ts && astro build",
+    "build": "node scrapeNoConcurrency.ts && astro build",
     "preview": "astro preview",
     "astro": "astro"
   },

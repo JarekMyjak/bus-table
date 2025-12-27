@@ -26,7 +26,8 @@ export default function TimeToNextBusTimer({ rawStopTimes }: TimeToNextBusTimerP
 	function findNextTimeIndex() {
 		const newAdjustedTime = new Date(new Date().getTime() + relativeOffset);
 		const foundNextTime = stopTimes.findIndex((time) => time > newAdjustedTime);
-		return foundNextTime !== -1 ? foundNextTime : 0;
+		const returnTime = foundNextTime !== -1 ? foundNextTime : 0;
+		return returnTime;
 	}
 
 	const [nextStopTimeIndex, setNextStopTimeIndex] = createSignal(findNextTimeIndex());
